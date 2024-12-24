@@ -2,51 +2,59 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/fs"
 	"os"
+	"path/filepath"
 )
 
-const configFilename = "/.gatorconfig.json"
+const configFilename = ".gatorconfig.json"
 
 type Config struct {
 	Url      string `json:"db_url"`
 	Username string `json:"current_user_name"`
 }
 
-func Read() Config {
-	home_dir, err := os.UserHomeDir()
+func Read() (Config, error) {
+	path, err := getConfigFilePath()
 	if err != nil {
-		fmt.Println(err)
-		return Config{}
+		return Config{}, err
 	}
-	file, err := os.ReadFile(home_dir + configFilename)
+
+	file, err := os.ReadFile(path)
 	if err != nil {
-		fmt.Println(err)
-		return Config{}
+		return Config{}, err
 	}
+
 	new_config := Config{}
 	if err := json.Unmarshal(file, &new_config); err != nil {
-		fmt.Println(err)
-		return Config{}
+		return Config{}, err
 	}
-	return new_config
+	return new_config, nil
 }
-func (c *Config) SetUser(username string) {
+func (c *Config) SetUser(username string) error {
 	c.Username = username
+	path, err := getConfigFilePath()
+	if err != nil {
+		return err
+	}
+
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	encoder := json.NewEncoder(file)
+	if err := encoder.Encode(c); err != nil {
+		return err
+	}
+	return nil
+
+}
+func getConfigFilePath() (string, error) {
 	home_dir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Println(err)
-		return
+		return "", err
 	}
-	jsonData, err := json.Marshal(c)
-	fmt.Println(string(jsonData))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	if err := os.WriteFile(home_dir+configFilename, jsonData, fs.ModePerm); err != nil {
-		fmt.Println(err)
-		return
-	}
+	path := filepath.Join(home_dir, configFilename)
+	return path, nil
+
 }
