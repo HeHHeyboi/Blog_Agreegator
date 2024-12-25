@@ -5,8 +5,7 @@ import (
 	"fmt"
 )
 
-func handlerReset(s *state, cmd command) error {
-	ctx := context.Background()
+func handlerReset(s *state, cmd command, ctx context.Context) error {
 	if err := s.db.DeleteAllUser(ctx); err != nil {
 		return fmt.Errorf("Cannot reset user ,%v", err)
 	}
