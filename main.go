@@ -3,6 +3,7 @@ package main
 import (
 	"blog_agreegator/internal/config"
 	"blog_agreegator/internal/database"
+	"context"
 	"database/sql"
 	"fmt"
 	"os"
@@ -33,6 +34,8 @@ func (c *commands) run(s *state, cmd command) error {
 
 }
 
+const feed = "https://www.wagslane.dev/index.xml"
+
 func main() {
 	config, err := config.Read()
 	if err != nil {
@@ -58,6 +61,17 @@ func main() {
 	})
 	commands.register("users", func(s *state, c command) error {
 		return handlerUsers(s, c)
+	})
+	commands.register("agg", func(s *state, c command) error {
+		ctx := context.Background()
+
+		feed, err := fetchFeed(ctx, feed)
+		if err != nil {
+			return fmt.Errorf("error when fetching : %v", err)
+		}
+
+		fmt.Printf("%+v\n", feed)
+		return nil
 	})
 	if len(os.Args) < 2 {
 		fmt.Println("not enough arguments")
