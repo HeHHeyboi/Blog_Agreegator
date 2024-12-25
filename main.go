@@ -53,6 +53,9 @@ func main() {
 	commands.register("register", func(s *state, c command) error {
 		return handlerRegister(s, c)
 	})
+	commands.register("reset", func(s *state, c command) error {
+		return handlerReset(s, c)
+	})
 	if len(os.Args) < 2 {
 		fmt.Println("not enough arguments")
 		os.Exit(1)
