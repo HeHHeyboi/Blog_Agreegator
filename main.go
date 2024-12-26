@@ -78,14 +78,11 @@ func main() {
 	})
 	commands.register("addfeed", middlewareLogin(handlerAddfeed))
 	commands.register("feeds", func(s *state, ctx context.Context, c command) error {
-		err := handlerFeeds(s, ctx)
-		if err != nil {
-			return fmt.Errorf("Error when list feeds :%v", err)
-		}
-		return nil
+		return fmt.Errorf("Error when list feeds: %v", handlerFeeds(s, ctx))
 	})
 	commands.register("follow", middlewareLogin(handlerFollow))
 	commands.register("following", middlewareLogin(handlerFollowing))
+	commands.register("unfollow", middlewareLogin(handlerUnfollow))
 	if len(os.Args) < 2 {
 		log.Fatalln("not enough arguments")
 	}

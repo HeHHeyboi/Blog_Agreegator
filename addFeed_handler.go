@@ -25,6 +25,8 @@ func handlerAddfeed(s *state, ctx context.Context, cmd command, user database.Us
 	if err != nil {
 		return fmt.Errorf("Error when create feed: %v", err)
 	}
+	fmt.Println("Title:", newFeed.Name)
+	fmt.Println("User:", user.Name)
 	_, err = s.db.CreateFeedFollow(
 		ctx,
 		database.CreateFeedFollowParams{
@@ -35,6 +37,9 @@ func handlerAddfeed(s *state, ctx context.Context, cmd command, user database.Us
 			FeedID:    newFeed.ID,
 		},
 	)
+	if err != nil {
+		return fmt.Errorf("Error when create feed: %v", err)
+	}
 
 	return nil
 }
