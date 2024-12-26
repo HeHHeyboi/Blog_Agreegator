@@ -1,5 +1,6 @@
 -- +goose Up
-CREATE TABLE feed (
+CREATE TABLE feeds (
+	id UUID PRIMARY KEY NOT NULL,
 	name VARCHAR(50) NOT NULL,
 	url VARCHAR(100) UNIQUE NOT NULL,
 	user_id UUID NOT NULL,
@@ -7,4 +8,4 @@ CREATE TABLE feed (
 );
 
 -- +goose Down
-DROP TABLE feed;
+DROP TABLE feeds;

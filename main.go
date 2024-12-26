@@ -97,6 +97,12 @@ func main() {
 		}
 		return nil
 	})
+	commands.register("follow", func(s *state, c command, ctx context.Context) error {
+		return handlerFollow(s, ctx, c)
+	})
+	commands.register("following", func(s *state, c command, ctx context.Context) error {
+		return handlerFollowing(s, ctx, c)
+	})
 	if len(os.Args) < 2 {
 		log.Fatalln("not enough arguments")
 	}

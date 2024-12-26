@@ -12,6 +12,9 @@ func handlerReset(s *state, cmd command, ctx context.Context) error {
 	if err := s.db.DeleteAllFeed(ctx); err != nil {
 		return fmt.Errorf("Cannot reset feed ,%v", err)
 	}
+	if err := s.db.DeleteAllFollow(ctx); err != nil {
+		return fmt.Errorf("Cannot reset follow ,%v", err)
+	}
 	fmt.Println("Reset succes full.")
 	return nil
 }
