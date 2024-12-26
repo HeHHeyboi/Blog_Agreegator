@@ -1,15 +1,12 @@
 package main
 
 import (
+	"blog_agreegator/internal/database"
 	"context"
 	"fmt"
 )
 
-func handlerFollowing(s *state, ctx context.Context, cmd command) error {
-	user, err := s.db.GetUser(ctx, s.config.Username)
-	if err != nil {
-		return fmt.Errorf("Error Get User: %v", err)
-	}
+func handlerFollowing(s *state, ctx context.Context, cmd command, user database.User) error {
 
 	following, err := s.db.GetFeedFollowsForUser(ctx, user.ID)
 	if err != nil {
