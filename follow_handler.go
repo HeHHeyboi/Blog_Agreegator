@@ -22,8 +22,8 @@ func handlerFollow(s *state, ctx context.Context, cmd command, user database.Use
 
 	follow, err := s.db.CreateFeedFollow(ctx, database.CreateFeedFollowParams{
 		ID:        uuid.New(),
-		CreatedAt: time.Time{},
-		UpdatedAt: time.Time{},
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 		UserID:    user.ID,
 		FeedID:    feed.ID,
 	})

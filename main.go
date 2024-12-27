@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -67,14 +68,19 @@ func main() {
 		return handlerUsers(s, c, ctx)
 	})
 	commands.register("agg", func(s *state, ctx context.Context, c command) error {
-
-		feed, err := fetchFeed(ctx, feed)
-		if err != nil {
-			return fmt.Errorf("error when fetching : %v", err)
+		if len(c.arg) < 1 {
+			return fmt.Errorf("Please input time ex. 1s (1 second) 1m (1 minute)")
 		}
-
-		fmt.Printf("%+v\n", feed)
-		return nil
+		time_between_req, err := time.ParseDuration(c.arg[0])
+		if err != nil {
+			return fmt.Errorf("Please input correct format ex. 1s (1 second) 1m (1 minute)")
+		}
+		fmt.Println("Collect feeds every", c.arg[0])
+		tick := time.NewTicker(time_between_req)
+		for ; ; <-tick.C {
+			_, err := scrapeFeeds(s, ctx)
+			fmt.Println(err)
+		}
 	})
 	commands.register("addfeed", middlewareLogin(handlerAddfeed))
 	commands.register("feeds", func(s *state, ctx context.Context, c command) error {
