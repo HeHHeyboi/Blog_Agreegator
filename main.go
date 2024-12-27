@@ -79,16 +79,21 @@ func main() {
 		tick := time.NewTicker(time_between_req)
 		for ; ; <-tick.C {
 			_, err := scrapeFeeds(s, ctx)
-			fmt.Println(err)
+			if err != nil {
+				log.Print(err)
+			}
 		}
 	})
 	commands.register("addfeed", middlewareLogin(handlerAddfeed))
 	commands.register("feeds", func(s *state, ctx context.Context, c command) error {
-		return fmt.Errorf("Error when list feeds: %v", handlerFeeds(s, ctx))
+		return handlerFeeds(s, ctx)
 	})
 	commands.register("follow", middlewareLogin(handlerFollow))
 	commands.register("following", middlewareLogin(handlerFollowing))
 	commands.register("unfollow", middlewareLogin(handlerUnfollow))
+	commands.register("browse", func(s *state, ctx context.Context, c command) error {
+		return handlerBrowse(s, ctx, c)
+	})
 	if len(os.Args) < 2 {
 		log.Fatalln("not enough arguments")
 	}
